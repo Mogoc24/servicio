@@ -1,0 +1,13 @@
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteRule ^(\w+)/?$ ?action=$1
+	#php_value session.gc_maxlifetime 7200
+	#php_value session.cookie_lifetime 7200
+	#http:localhost/php-laravel/index.php?action=contacts
+	#http://localhost/php-laravel/contacts
+</IfModule>
+#<Files *.md>
+#    ForceType application/octet-stream
+#    Header set Content-Disposition attachment
+#</Files>

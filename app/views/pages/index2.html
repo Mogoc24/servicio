@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Página de prueba </title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	</head>
+	<body>
+		<h1>Página de prueba</h1>
+
+		<li><a href="" id="logout_btn"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
+	</body>
+
+	<script type="text/javascript">	
+		$("#logout_btn").click(function(event) {
+			event.preventDefault();
+			$.ajax({
+				url: 'app/model/model.php',
+				type: 'POST',
+				//dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
+				data: {"type": "logout"},
+			})
+			.done(function() {
+				console.log("success");
+				window.location = "/grupoit/";
+			});
+		});
+		
+	</script>
+</html>

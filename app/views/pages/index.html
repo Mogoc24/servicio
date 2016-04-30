@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="http://www.grupoitsur.com/wp-content/uploads/2014/03/favicon.png" />
+
+
+    <title>Servicios Grupo IT</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="app/views/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="app/views/bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="app/views/dist/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="app/views/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="main">Servicios Grupo IT</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                <li><a id="usuario" href="#" style="pointer-events: none;"></a></li>
+                <li><a href="" id="logout_btn"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
+                <!--li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#"><i class="fa fa-user fa-fw"></i> Perfil</a>
+                        </li>
+                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Opciones</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="" id="logout_btn"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                </li-->
+                    <!-- /.dropdown-user -->
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <!--li>
+                            <a href=""><i class="fa fa-dashboard fa-fw" ></i> Panel de control</a>
+                        </li-->
+                        <li>
+                            <a href=""><i class="fa fa-table fa-fw"></i> Servicios</a>
+                        </li>
+                        <li>
+                            <a href="userForm"><i class="fa fa-user"></i> Usuarios</a>
+                        </li>
+                        <li>
+                            <a href="customer"><i class="fa fa-users"></i> Clientes<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="customer">Clientes</a>
+                                </li>
+                                <li>
+                                    <a href="contacts">Contactos</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-map-marker"></i> Equipos<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="#">Dispositivos</a>
+                                </li>
+                                <li>
+                                    <a href="#">Sim Cards</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="tickets"><i class="fa fa-edit fa-fw"></i> Generar Ticket</a>
+                        </li>
+                        <li>
+                            <a href="changes"><i class="fa fa-list fa-fw"></i> Movimientos</a>
+                        </li>
+                        <!--li>
+                            <a href="#" id="logout_btn"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li-->
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <!-- Page Content -->
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">Vista principal</h1>
+                    </div>
+                    <!-- /.col-lg-12 -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="app/views/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="app/views/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="app/views/bower_components/metisMenu/dist/metisMenu.min.js"></script>
+    <script src="app/views/dist/js/sb-admin-2.js"></script>
+    <script type="text/javascript"> 
+
+        $.ajax({
+            url: 'app/model/model.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {"type": "session"},
+        }).done(function(info) {
+            console.log(info.usuario);
+            $("#usuario").html("<b> Usuario: </b> [" + info.usuario + "]");
+        });
+    
+
+        $("#logout_btn").click(function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: 'app/model/model.php',
+                type: 'POST',
+                //dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
+                data: {"type": "logout"},
+            })
+            .done(function() {
+                console.log("success");
+                window.location = "/grupoit/";
+            });
+        });
+
+        /*$.ajax({
+            url: 'app/model/model.php',
+            type: 'POST',
+            //dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
+            data: {param1: 'value1'},
+        })
+        .done(function() {
+            console.log("success");
+        });*/
+        
+        
+    </script>
+
+</body>
+
+</html>
