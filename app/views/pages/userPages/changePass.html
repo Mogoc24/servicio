@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Servicios Grupo IT</title>
+    <link href="app/views/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="app/views/bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
+    <link href="app/views/dist/css/sb-admin-2.css" rel="stylesheet">
+    <link href="app/views/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link rel="shortcut icon" href="http://www.grupoitsur.com/wp-content/uploads/2014/03/favicon.png" />
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="login-panel panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Cambio de contraseña</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form role="form" id="formPass">
+                            <fieldset>
+                                <div class="form-group">
+                                    <input class="form-control" placeholder="Contraseña anterior" name="passBefore" id="passBefore" type="password" required autofocus>
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control" placeholder="Contraseña nueva" name="pass" id="pass" type="password" required>
+                                    <div id="longitud" style="color:red">Debe tener al menos 8 caracteres</div>
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control" placeholder="Repita contraseña" name="pass1" type="password" required id="pass1">
+                                    <div id="coinciden" style="color:red">Las contraseñas deben coincidir</div>
+                                </div>
+                                <!--div class="checkbox">
+                                    <label>
+                                        <input name="remember" type="checkbox" value="Remember Me">Remember Me
+                                    </label>
+                                </div-->
+                                <!-- Change this to a button or input when using this as a form -->
+                                <input class="btn btn-lg btn-primary btn-block" type="submit" value="Cambiar" id="cambio">
+                                <!--a href="index.html" class="btn btn-lg btn-primary btn-block">Ingresar</a-->
+                            </fieldset>
+                        </form>
+                        <br>
+                        <div id="incorrecto" class="alert alert-danger"></div>
+                        <div id="correcto" class="alert alert-success"></div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button id="logout_btn" onclick="closeSession()">Cerrar sesión</button>
+
+    <script src="app/views/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="app/views/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="app/views/bower_components/metisMenu/dist/metisMenu.min.js"></script>
+    <script src="app/views/dist/js/sb-admin-2.js"></script>
+    <script type="text/javascript">
+        $("#incorrecto").hide();
+        $("#correcto").hide();
+        $("#longitud").hide();
+        $("#coinciden").hide();
+        $("#cambio").attr('disabled', 'disabled');
+
+        $.ajax({
+            url: 'app/model/model.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {"type": "session"},
+        }).done(function(info) {
+            console.log(info);
+            var idUser = info.idUser;
+            var user = info.usuario;
+
+            sendPass(idUser);
+        });
+
+        $("#pass").keyup(function(event) {
+            var pass = $("#pass").val();
+            if (pass.length < 8) {
+                $("#longitud").show();
+            }
+            else{
+                $("#longitud").hide();
+                $("#pass1").keyup(function(event) {
+                var pass = $("#pass").val();
+                var pass1 = $("#pass1").val();
+                if (pass != pass1) {
+                    $("#coinciden").show();
+                }
+                else{
+                    $("#coinciden").hide();
+                    $("#cambio").attr('disabled', false);
+                }
+
+            });
+            }
+        });
+
+        function sendPass (idUser) {
+            $("#formPass").submit(function(event) {
+                event.preventDefault();
+
+                var pass = $("#pass1").val();
+                var passBefore = $("#passBefore").val();
+                var info = JSON.stringify({"idUser": idUser, "pass": pass, "passBefore": passBefore});
+                $.ajax({
+                    url: 'app/model/model.php',
+                    type: 'POST',
+                    //dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
+                    data: {"type": "changePass", "info": info}
+                })
+                .done(function(info) {
+                    console.log(info);
+                    if (info == "cambioCorrecto") {
+                        $("#correcto").html("<center><strong>¡Exito!</strong> La contraseña se cambio correctamente</center>");
+                        $("#correcto").show();
+                        $("#incorrecto").hide();
+                        setTimeout(closeSession, 3000);
+                    }
+                    else if (info == "cambioIncorrecto") {
+                        $("#incorrecto").html("<center><strong>¡Error!</strong> Ocurrio algún error al cambiar la contraseña</center>");
+                        $("#incorrecto").show();
+                        $("#correcto").hide();
+                    }
+                    else if (info == "badPass") {
+                        $("#incorrecto").html("<center><strong>¡Error!</strong> La contraseña anterior es incorrecta</center>");
+                        $("#incorrecto").show();
+                        $("#correcto").hide();
+                    }
+                });
+                
+            });
+        }
+
+        function closeSession () {
+                $.ajax({
+                    url: 'app/model/model.php',
+                    type: 'POST',
+                    //dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
+                    data: {"type": "logout"},
+                })
+                .done(function() {
+                    console.log("success");
+                    window.location = "/grupoit/";
+                });
+        }
+
+
+    </script>
+
+</body>
+
+</html>

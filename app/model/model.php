@@ -28,7 +28,7 @@
 			$user = $this->mysqli->real_escape_string($user);
 			$pass = $this->mysqli->real_escape_string($pass);
 
-			$query = $this->mysqli->query("SELECT idusers, user, name_user, pass, type FROM users WHERE user = '$user'");
+			$query = $this->mysqli->query("SELECT idusers, user, name_user, pass, type, status FROM users WHERE user = '$user'");
 			
 			if ($query->num_rows > 0) {
 				while ($row = $query->fetch_array()) {
@@ -37,6 +37,7 @@
 					$idusers = $row['idusers'];
 					$passHash = $row['pass'];
 					$type = $row['type'];
+					$status = $row['status'];
 				}
 				//echo $passHash;
 					if (password_verify($pass, $passHash)) {
@@ -45,6 +46,7 @@
 						$_SESSION['usuario'] = $user;
 						$_SESSION['idusers'] = $idusers;
 						$_SESSION['type'] = $type;
+						$_SESSION['status'] = $status;
 						echo "correcto";
 					}
 					else{
@@ -185,9 +187,54 @@
 			echo $str.$cadena;
 		}
 
+		public function changePass(){
+			$infoJ = $_POST['info'];
+			$info = json_decode($infoJ, false, 512, JSON_BIGINT_AS_STRING);
+
+			$idUser = $info->idUser;
+			//echo $user = utf8_decode($info->user);
+			$pass = utf8_decode($info->pass);
+			$passBefore = utf8_decode($info->passBefore);
+			$typeChange = utf8_decode("Cambio de contraseña");
+			$label = "Crypt Pass";
+			$pass = $this->mysqli->real_escape_string($pass);
+			$passHash = password_hash($pass, PASSWORD_BCRYPT);
+
+			$query2 = $this->mysqli->query("SELECT pass FROM users WHERE idusers = '$idUser'");
+
+			if ($query2->num_rows > 0) {
+				while ($row = $query2->fetch_array()) {
+					$passDb = $row['pass'];
+				}
+
+				if (password_verify($passBefore, $passDb)) {
+					
+					$query = "UPDATE users SET pass = '$passHash', status = 1 WHERE idusers = '$idUser'";
+					if ($this->mysqli->query($query)) {
+						if ($this->mysqli->query("INSERT INTO changes values(default, '$typeChange', '$label', current_timestamp, '$idUser')")) {
+							echo "cambioCorrecto";
+						}
+						else {
+							echo "cambioIncorrecto";
+						}
+					}
+					else{
+						echo "incorrecto";
+					}
+				}
+				else{
+					echo "badPass";
+				}
+			}
+			else{
+				echo "no existe";
+			}
+
+		}
+
 		public function showSession(){
 			session_start();
-			echo '{"idUser": '.$_SESSION['idusers'].', "usuario": "'.$_SESSION['usuario'].'"}';
+			echo '{"idUser": '.$_SESSION['idusers'].', "usuario": "'.$_SESSION['usuario'].'", "status":'.$_SESSION['status'].'}';
 			//echo $_SESSION['idusers'];
 		}
 
@@ -215,6 +262,9 @@
 	}
 	elseif ($_POST['type']=="allChanges") {
 		$instance->allChanges();
+	}
+	elseif ($_POST['type']=="changePass") {
+		$instance->changePass();
 	}
 	else{
 		echo "Error al acceder a la funcion";

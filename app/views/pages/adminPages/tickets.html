@@ -75,10 +75,10 @@
                             <a href="userForm"><i class="fa fa-user"></i> Usuarios</a>
                         </li>
                         <li>
-                            <a href=""><i class="fa fa-users"></i> Clientes<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-users"></i> Clientes<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="customers">Clientes</a>
+                                    <a href="customer">Clientes</a>
                                 </li>
                                 <li>
                                     <a href="contacts">Contactos</a>
@@ -97,7 +97,7 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="tickets"><i class="fa fa-edit fa-fw"></i> Generar Ticket</a>
+                            <a href=""><i class="fa fa-edit fa-fw"></i> Generar Ticket</a>
                         </li>
                         <li>
                             <a href="changes"><i class="fa fa-list fa-fw"></i> Movimientos</a>
@@ -117,91 +117,66 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1 class="page-header">Clientes</h1>
-                        <h3>Ingresar cliente</h3>
+                        <h1 class="page-header">Tickets</h1>
+                        <h3>Iniciar Ticket</h3>
                     </div>
                 </div>
                 <div class="row">
-                    <form role="form" class="col-md-6" id="formCustomer">
+                    <form rol = "form" class="col-md-6" id="formTicket">
                         <div class="form-group" class="col-md-4">
-                            <label for="nombre">Id Cliente (ASPEL): </label>
-                            <input type="text" class="form-control" id="id" required>
+                            <label for="customer">Cliente que reporta: </label>
+                            <select class="form-control" id="problemType" required>
+                                <option value="" hidden>Seleccione una opción</option>
+                            </select>
                         </div>
                         <div class="form-group" class="col-md-4">
-                            <label for="nombre">Nombre: </label>
-                            <input type="text" class="form-control" id="name" required>
-                        </div>
-                        <div class="form-group" class="col-md-4">
-                            <label for="nombre">Plataforma(s): </label>
-                        </div>
-                        <div class="form-group" class="col-md-4">
-                            <div class="checkbox-inline">
-                                <label>
-                                    <input type="checkbox" name="platforms" value="1" >Pegasus
-                                </label>
-                            </div>
-                            <div class="checkbox-inline">
-                                <label>
-                                    <input type="checkbox" name="platforms" value="2">Star Track
-                                </label>
-                            </div>
-                            <div class="checkbox-inline">
-                                <label>
-                                    <input type="checkbox" name="platforms" value="3">Contador
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group" class="col-md-4">
-                            <label for="email">Correo: </label>
-                            <input type="email" class="form-control" id="email" required>
-                        </div>
-                        <div class="form-group" class="col-md-4">
-                            <label for="tel">Telefono: </label>
-                            <input type="text" class="form-control" id="tel" required>
-                        </div>
-                        <div class="form-group" class="col-md-4">
-                            <label for="address">Dirección: </label>
-                            <input type="text" class="form-control" id="address">
+                            <label for="problemDate">Fecha del problema:</label>
+                            <input type="date" class="form-control">
                         </div>
                         <!--div class="form-group" class="col-md-4">
-                            <label for="contacto">Contacto: </label>
-                            <input type="text" class="form-control" id="contact">
+                            <label for="problem">*Tipo de problema: </label>
+                            <select class="form-control" id="problemType" required>
+                                <option value="" hidden>Seleccione una opción</option>
+                                <option value="1">No reporta</option>
+                                <option value="2">Reporte intermitente</option>
+                                <option value="3">Otro</option>
+                            </select>
                         </div-->
                         <div class="form-group" class="col-md-4">
-                            <input type="submit" class="btn btn-primary" id="btn-customer">
+                            <label for="problem">Tipo de servicio: </label>
+                            <select class="form-control" id="problemType" required>
+                                <option value="" hidden>Seleccione una opción</option>
+                                <option value="1">Instalación</option>
+                                <option value="2">Revisión</option>
+                                <option value="3">Reinstalación</option>
+                                <option value="4">Reconfiguración</option>
+                                <option value="5">Actualización</option>
+                                <option value="6">OTA</option>
+                            </select>
                         </div>
-                        <!--div id="incorrecto" class="alert alert-danger">
-                            <center><strong>¡Error!</strong> El usuario o el correo ya fueron registrados</center>
-                        </div-->
+                        <div class="form-group" class="col-md-4">
+                            <label for="folio">Descripción: </label>
+                            <textarea id="desc" class="form-control" style="resize : none;"></textarea>
+                        </div>
                     </form>
                 </div>
                 <div class="row">
-
-                </div>
-                <div class="row">
                     <div class="col-lg-12">
-                        <h3>Clientes registrados</h3>
+                        <h3>Estado de los tickets</h3>
                     </div>
-                    <!--div class="infodiv table-responsive col-lg-8">
+                    <div class="infodiv table-responsive col-lg-6">
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th>Id</th>
-                                    <th>Usuario</th>
-                                    <th>Nombre(s)</th>
-                                    <th>Apellido(s)</th>
-                                    <th>Correo</th>
-                                    <th>Tipo</th>
-                                    <th>Fecha</th>
+                                    <th>ID</th>
+                                    <th>Folio</th>
+                                    <th>Cliente</th>
+                                    <th>Tipo de servicio</th>
+                                    <th>Estado del ticket</th>
                                 </tr>
                             </thead>
-                            <tbody id="tableUser">
-                                
-                            </tbody>
                         </table>
-                        
-                    </div-->
-                    <!-- /.col-lg-12 -->
+                    </div>
                 </div>
                 <!-- /.row -->
             </div>

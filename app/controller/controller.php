@@ -7,12 +7,15 @@
 				if ($_SESSION['type']==1) {
 					include("app/views/pages/index.html");
 				}
-				elseif ($_SESSION['type']==2) {
+				elseif ($_SESSION['type']==2 && $_SESSION['status'] == 0) {
+					include("app/views/pages/userPages/changePass.html");
+				}
+				elseif($_SESSION['type']==2 && $_SESSION['status'] == 1){
 					include("app/views/pages/userPages/test.html");
 				}
 				else{
-					//include("app/views/pages/login.html");
-					header('Location: /grupoit/');
+					include("app/views/pages/login.html");
+					//header('Location: /grupoit/');
 				}
 			}
 			else
@@ -117,8 +120,11 @@
 
 		public function test(){
 			session_start();
-			if (isset($_SESSION["connected"]) && isset($_SESSION['type'])) {
-				if ($_SESSION['type']==2) {
+			if (isset($_SESSION["connected"]) && isset($_SESSION['type']) && isset($_SESSION['status'])) {
+				if ($_SESSION['type']==2 && $_SESSION['status'] == 0) {
+					include("app/views/pages/userPages/changePass.html");
+				}
+				elseif ($_SESSION['type']==2 && $_SESSION['status'] == 1) {
 					include("app/views/pages/userPages/test.html");
 				}
 				else{

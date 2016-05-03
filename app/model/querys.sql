@@ -11,3 +11,6 @@ INSERT INTO users values(default, '$user', '$name_user', '$ap_user', '$passHash'
 ############################### Todos los Usuarios #############################
 SELECT c.idchanges, c.type, c.label, c.date, u.user FROM changes as c
 INNER JOIN users as u on c.users_idusers = u.idusers
+
+############################### Cambiar contraseña #############################
+UPDATE users SET pass = passHash WHERE idusers = idusers

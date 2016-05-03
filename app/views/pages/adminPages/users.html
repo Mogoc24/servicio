@@ -276,10 +276,10 @@
                 var info = JSON.stringify({"user": user, "name": name, "ap": ap, "email": email, "type": type, "idUser": idUser});
                 
                 $.ajax({
-                    url: 'app/model/model.php',
+                    url: 'app/model/sendEmail.php',
                     type: 'POST',
                     //dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
-                    data: {"type": "saveUser", "info": info},
+                    data: {"type": "saveUser", "info": info}
                 })
                 .done(function(info) {
                     console.log(info);
