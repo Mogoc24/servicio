@@ -1,6 +1,6 @@
 CREATE DATABASE grupoit;
 
-USE grupoit;
+USE grupoit
 
 DROP TABLE IF EXISTS `changes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
