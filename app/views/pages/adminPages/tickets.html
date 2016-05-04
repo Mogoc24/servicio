@@ -125,13 +125,13 @@
                     <form rol = "form" class="col-md-6" id="formTicket">
                         <div class="form-group" class="col-md-4">
                             <label for="customer">Cliente que reporta: </label>
-                            <select class="form-control" id="problemType" required>
+                            <select class="form-control" id="customer" required>
                                 <option value="" hidden>Seleccione una opción</option>
                             </select>
                         </div>
                         <div class="form-group" class="col-md-4">
                             <label for="problemDate">Fecha del problema:</label>
-                            <input type="date" class="form-control">
+                            <input type="date" class="form-control" id="problemDate" required>
                         </div>
                         <!--div class="form-group" class="col-md-4">
                             <label for="problem">*Tipo de problema: </label>
@@ -146,17 +146,20 @@
                             <label for="problem">Tipo de servicio: </label>
                             <select class="form-control" id="problemType" required>
                                 <option value="" hidden>Seleccione una opción</option>
-                                <option value="1">Instalación</option>
+                                <!--option value="1">Instalación</option>
                                 <option value="2">Revisión</option>
                                 <option value="3">Reinstalación</option>
                                 <option value="4">Reconfiguración</option>
                                 <option value="5">Actualización</option>
-                                <option value="6">OTA</option>
+                                <option value="6">OTA</option-->
                             </select>
                         </div>
                         <div class="form-group" class="col-md-4">
-                            <label for="folio">Descripción: </label>
+                            <label for="folio">* Descripción: </label>
                             <textarea id="desc" class="form-control" style="resize : none;"></textarea>
+                        </div>
+                        <div class="form-group" class="col-md-4">
+                            <input type="submit" class="btn btn-primary" id="btn-ticket">
                         </div>
                     </form>
                 </div>
@@ -172,6 +175,7 @@
                                     <th>Folio</th>
                                     <th>Cliente</th>
                                     <th>Tipo de servicio</th>
+                                    <th>Fecha del ticket</th>
                                     <th>Estado del ticket</th>
                                 </tr>
                             </thead>
@@ -206,58 +210,40 @@
             $("#usuario").html("<b> Usuario: </b> [" + info.usuario + "]");
             //console.log(idUser);
             var idUser = info.idUser;
-            sendCustomer(idUser);
+            sendTicket(idUser);
         });
 
-        function sendCustomer (idUser) {
-            $("#formCustomer").submit(function(event) {
-                event.preventDefault();
-                var idUser = $("#id").val();
-                var name = $("#name").val();
-                var platforms = document.forms[0];
-                var email = $("#email").val();
-                var tel = $("#tel").val();
-                var address = $("#address").val();
+        $.ajax({
+            url: 'app/model/model.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {"type": "customer"},
+        }).done(function(info) {
+            console.log(info);
+            for(var i = 0; i<info.infoCustomers.length; i++){
+                var select = document.getElementById("customer");
+                var option = document.createElement("option");
+                option.text = info.infoCustomers[i].name;
+                option.value = info.infoCustomers[i].id;
+                select.add(option);
+            }
+        });
 
-                for (var i = 0; i < platforms.length; i++) {
-                    if (platforms[i].checked) {
-                        console.log(platforms[i]);
-                    };
-                };
-
-                var info = JSON.stringify({"name": name, "platforms": platforms, "email": email, "tel":tel, "address":address, "idUser": idUser});
-                console.log(info);
-                
-                $.ajax({
-                    url: 'app/model/model.php',
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {"type": "saveCustomer", "info": info},
-                })
-                .done(function(info) {
-                    console.log(info);
-                    //createTable();            
-                    /*if (info == "existe") {
-                        $("#incorrecto").html("<center><strong>¡Error!</strong> El usuario o el correo ya fueron registrados</center>")
-                        $("#incorrecto").show();
-                        $("#correcto").hide();
-                        document.getElementById('formUser').reset();
-                    }
-                    else if (info == "cambioCorrecto") {
-                        $("#correcto").html("<center><strong>¡Bien!</strong> El usuario se registro correctamente</center>")
-                        $("#correcto").show();
-                        $("#incorrecto").hide();
-                        document.getElementById('formUser').reset();   
-                    }
-                    else if (info == "cambioIncorrecto") {
-                        $("#incorrecto").html("<center><strong>¡Error!</strong> No se registro el cambio</center>")
-                        $("#incorrecto").show();
-                        document.getElementById('formUser').reset();
-                    }*/
-                });
-                
-            });
-        }
+        $.ajax({
+            url: 'app/model/model.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {"type": "services"},
+        }).done(function(info) {
+            console.log(info);
+            for(var i = 0; i<info.infoServices.length; i++){
+                var select2 = document.getElementById("problemType");
+                var option2 = document.createElement("option");
+                option2.text = info.infoServices[i].name;
+                option2.value = info.infoServices[i].id;
+                select2.add(option2);
+            }
+        });
 
 
         $("#incorrecto").hide();
@@ -274,6 +260,30 @@
                 window.location = "/grupoit/";
             });
         });
+
+        function sendTicket (idUser) {
+            $("#formTicket").submit(function(event) {
+                event.preventDefault();
+                var customer = $("#customer").val();
+                var problemDate = $("#problemDate").val();
+                var problemType = $("#problemType").val();
+                var desc = $("#desc").val();
+
+                var info = JSON.stringify({"customer": customer, "problemDate": problemDate, "problemType": problemType, "desc": desc, "idUser": idUser});
+                //console.log(info);
+
+                $.ajax({
+                    url: 'app/model/model.php',
+                    type: 'POST',
+                    //dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
+                    data: {"type": "saveTicket", "info": info}
+                })
+                .done(function(info) {
+                    console.log(info);
+                });
+                
+            });
+        }
 
         
     </script>

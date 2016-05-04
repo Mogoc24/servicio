@@ -18,6 +18,19 @@
 			
 			return $password;
 		}
+		
+		function createFolio($type){
+			$now = time();
+			//$fecha = date("Y-m-d H:i:s");
+			$str = date("Y-m-d", $now);
+			//$str .= "-Rep-";
+			$str .= $type;
+			$query = $this->mysqli->query("SELECT idfolios FROM folios ORDER BY idfolios DESC LIMIT 1");
+			$cadena = str_pad($numero,8,"0",STR_PAD_LEFT);
+			$folio = $str.$cadena;
+
+			return $folio;
+		}
 
 		public function login(){
 			$infoJ = $_POST['info'];
@@ -124,7 +137,49 @@
 			//$id = $this->mysqli->real_escape_string($id);
 			//$name_customer = $this->mysqli->real_escape_string($name_customer);
 			echo "Funcion correcta";
-			
+		}
+
+		public function saveTicket(){
+			$infoJ = $_POST['info'];
+			$info = json_decode($infoJ, false, 512, JSON_BIGINT_AS_STRING);
+			//print_r($info);
+
+			$idUser = $info->idUser;
+			$customer = $info->customer;
+			$problemDate = $info->problemDate;
+			$problemType = $info->problemType;
+			$desc = utf8_decode($info->desc);
+
+			$idUser = $this->mysqli->real_escape_string($idUser);
+			$customer = $this->mysqli->real_escape_string($customer);
+			$problemDate = $this->mysqli->real_escape_string($problemDate);
+			$problemType = $this->mysqli->real_escape_string($problemType);
+			$desc = $this->mysqli->real_escape_string($desc);
+
+		}
+
+		public function allCustomers(){
+			$query = $this->mysqli->query("SELECT * FROM customers");
+			$output = '{"infoCustomers":[';
+			while ($row = $query->fetch_array()) {
+				if ($output != '{"infoCustomers":[') {$output .= ",";}
+				$output .= '{"id":'.$row['idcustomers'].',';
+				$output .= '"name":"'.$row['name_customer'].'"}';
+			}
+			$output .= "]}";
+			echo $output;
+		}
+
+		public function allServices(){
+			$query = $this->mysqli->query("SELECT * FROM services");
+			$output = '{"infoServices":[';
+			while ($row = $query->fetch_array()) {
+				if ($output != '{"infoServices":[') {$output .= ",";}
+				$output .= '{"id":'.$row['idservices'].',';
+				$output .= '"name":"'.utf8_encode($row['name_service']).'"}';
+			}
+			$output .= "]}";
+			echo $output;
 		}
 
 		public function allUsers(){
@@ -174,17 +229,6 @@
 			}
 			$output .= "]}";
 			echo $output;
-		}
-
-		public function createFolio($type){
-			$now = time();
-			//$fecha = date("Y-m-d H:i:s");
-			$str = date("Y-m-d", $now);
-			//$str .= "-Rep-";
-			$str .= $type;
-			$query = $this->mysqli->query("SELECT idfolios FROM folios ORDER BY idfolios DESC LIMIT 1");
-			$cadena = str_pad($numero,8,"0",STR_PAD_LEFT);
-			echo $str.$cadena;
 		}
 
 		public function changePass(){
@@ -248,6 +292,9 @@
 	elseif ($_POST['type']=="saveCustomer") {
 		$instance->saveCustomer();
 	}
+	elseif ($_POST['type']=="saveTicket") {
+		$instance->saveTicket();
+	}
 	elseif ($_POST['type']=="login") {
 		$instance->login();
 	}
@@ -256,6 +303,12 @@
 	}
 	elseif ($_POST['type']=="session") {
 		$instance->showSession();
+	}
+	elseif ($_POST['type']=="customer") {
+		$instance->allCustomers();
+	}
+	elseif ($_POST['type']=="services") {
+		$instance->allServices();
 	}
 	elseif ($_POST['type']=="allUsers") {
 		$instance->allUsers();

@@ -125,7 +125,7 @@
                     <form role="form" class="col-md-6" id="formContacts">
                         <div class="form-group" class="col-md-4">
                             <label for="costumer">Cliente: </label>
-                            <select class="form-control" class="col-md-4">
+                            <select class="form-control" class="col-md-4" id="contact">
                                 <option value="" hidden>Seleccione un cliente</option>
                             </select>
                         </div>
@@ -215,6 +215,23 @@
             var idUser = info.idUser;
             sendCustomer(idUser);
         });
+
+        $.ajax({
+            url: 'app/model/model.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {"type": "customer"},
+        }).done(function(info) {
+            console.log(info);
+            for(var i = 0; i<info.infoCustomers.length; i++){
+                var select = document.getElementById("contact");
+                var option = document.createElement("option");
+                option.text = info.infoCustomers[i].name;
+                option.value = info.infoCustomers[i].id;
+                select.add(option);
+            }
+        });
+
 
         function sendCustomer (idUser) {
             $("#formCustomer").submit(function(event) {
