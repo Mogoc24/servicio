@@ -218,6 +218,7 @@
     <script src="app/views/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="app/views/bower_components/metisMenu/dist/metisMenu.min.js"></script>
     <script src="app/views/dist/js/sb-admin-2.js"></script>
+
     <script type="text/javascript"> 
         $("#tel").numeric();
 
@@ -239,20 +240,22 @@
                 event.preventDefault();
                 var idUser = $("#id").val();
                 var name = $("#name").val();
-                var platforms = document.forms[0];
+                var platforms = document.getElementsByName("platforms");
                 var email = $("#email").val();
                 var tel = $("#tel").val();
                 var address = $("#address").val();
+                var selPlatforms = [];
 
                 for (var i = 0; i < platforms.length; i++) {
                     if (platforms[i].checked) {
-                        console.log(platforms[i]);
-                    };
-                };
+                        console.log(platforms[i].value);
+                        selPlatforms.push(platforms[i].value);
+                    }
+                }
 
-                var info = JSON.stringify({"name": name, "platforms": platforms, "email": email, "tel":tel, "address":address, "idUser": idUser});
+                var info = JSON.stringify({"name": name, "platforms": selPlatforms, "email": email, "tel":tel, "address":address, "idUser": idUser});
                 console.log(info);
-                
+
                 $.ajax({
                     url: 'app/model/model.php',
                     type: 'POST',
