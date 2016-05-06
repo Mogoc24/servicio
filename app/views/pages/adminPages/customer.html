@@ -300,6 +300,7 @@
                 var customerType = $("#customerType").val();
                 var address = $("#address").val();
                 var selPlatforms = [];
+<<<<<<< HEAD
                 for (var i = 0; i < platforms.length; i++) {
                     if (platforms[i].checked) {
                         //console.log(platforms[i].value);
@@ -308,6 +309,19 @@
                 }
                 var info = JSON.stringify({"name": name, "platforms": selPlatforms, "email": email, "tel":tel, "address":address, "type": customerType,"idUser": idUser});
                 //console.log(info);
+=======
+
+                for (var i = 0; i < platforms.length; i++) {
+                    if (platforms[i].checked) {
+                        console.log(platforms[i].value);
+                        selPlatforms.push(platforms[i].value);
+                    }
+                }
+
+                var info = JSON.stringify({"name": name, "platforms": selPlatforms, "email": email, "tel":tel, "address":address, "idUser": idUser});
+                console.log(info);
+
+>>>>>>> origin/master
                 $.ajax({
                     url: 'app/model/model.php',
                     type: 'POST',
