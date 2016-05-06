@@ -44,9 +44,9 @@
 		echo "existe";
 	}
 	else{
-		$query = "INSERT INTO users values(default, '$user', '$name_user', '$ap_user', '$passHash', '$email','$rango', '$salt', current_timestamp)";
+		$query = "INSERT INTO users values(default, '$user', '$name_user', '$ap_user', '$passHash', '$email','$rango', '$salt', current_timestamp, 0)";
 		if ($conexion->query($query)) {
-			if ($conexion->query("INSERT INTO changes values(default, '$typeChange', '$user', current_timestamp, '$idUser')")) {
+			if ($conexion->query("INSERT INTO changes values(default, '$typeChange', '$user', current_timestamp,'$idUser')")) {
 				echo "cambioCorrecto";
 				$mail->IsSMTP();
 				$mail->Host = 'smtp.gmail.com';
@@ -67,7 +67,7 @@
 				   
 				$body  = "Su usuario es: <b>".utf8_decode($user)."</b> <br>";
 				$body .= utf8_decode("Su Contraseña es:  <b>").$pass."</b> <br>";
-				$body .= "Vaya al siguente enlace <a href = '189.236.30.227/grupoit'>Servicios Grupo IT</a> Para acceder a la página de servicio";
+				//$body .= "Vaya al siguente enlace <a href = '189.236.30.227/grupoit'>Servicios Grupo IT</a> Para acceder a la página de servicio";
 
 				$mail->Body = $body;  
 
@@ -92,7 +92,7 @@
 		$characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		$characters .= "abcdefghijklmnopqrstuvwxyz";
 		$characters .= "0123456789";
-		$characters .= "*#$%&!*][}{";
+		//$characters .= "*#$%&!*][}{";
 		$stringRand = str_shuffle($characters);
 		$password = substr($stringRand, 1, 10);
 		

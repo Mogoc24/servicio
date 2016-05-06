@@ -75,10 +75,10 @@
                             <a href="userForm"><i class="fa fa-user"></i> Usuarios</a>
                         </li>
                         <li>
-                            <a href=""><i class="fa fa-users"></i> Clientes<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-users"></i> Clientes<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="#">Clientes</a>
+                                    <a href="">Clientes</a>
                                 </li>
                                 <li>
                                     <a href="contacts">Contactos</a>
@@ -89,10 +89,13 @@
                             <a href="#"><i class="fa fa-map-marker"></i> Equipos<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="#">Dispositivos</a>
+                                    <a href="devices">Dispositivos</a>
                                 </li>
                                 <li>
-                                    <a href="#">Sim Cards</a>
+                                    <a href="sims">Sim Cards</a>
+                                </li>
+                                <li>
+                                    <a href="scripts">Scripts</a>
                                 </li>
                             </ul>
                         </li>
@@ -128,13 +131,20 @@
                             <input type="text" class="form-control" id="id" required>
                         </div>
                         <div class="form-group" class="col-md-4">
-                            <label for="nombre">Nombre: </label>
+                            <label for="nombre">Cliente: </label>
                             <input type="text" class="form-control" id="name" required>
                         </div>
                         <div class="form-group" class="col-md-4">
-                            <label for="platform">Plataforma(s): </label>
+                            <label for="tipo">Tipo de cliente: </label>
+                            <select class="form-control" id="customerType" required>
+                                <option value="" hidden>Seleccione una opción</option>
+                                <option value="1">GPS</option>
+                                <option value="2">Internet Satelital</option>
+                                <option value="3">Cámaras</option>
+                            </select>
                         </div>
-                        <div class="form-group" class="col-md-4">
+                        <div class="form-group" class="col-md-4" id="divPlatforms">
+                            <label for="platform">Plataforma(s): </label><br>
                             <div class="checkbox-inline">
                                 <label>
                                     <input type="checkbox" name="platforms" value="1" >Pegasus
@@ -156,7 +166,7 @@
                             <input type="email" class="form-control" id="email" required>
                         </div>
                         <div class="form-group" class="col-md-4">
-                            <label for="tel">Telefono: </label>
+                            <label for="tel">Teléfono: </label>
                             <input type="text" class="form-control" id="tel" required>
                         </div>
                         <div class="form-group" class="col-md-4">
@@ -170,9 +180,13 @@
                         <div class="form-group" class="col-md-4">
                             <input type="submit" class="btn btn-primary" id="btn-customer">
                         </div>
-                        <!--div id="incorrecto" class="alert alert-danger">
-                            <center><strong>¡Error!</strong> El usuario o el correo ya fueron registrados</center>
-                        </div-->
+                        <div id="incorrecto" class="alert alert-danger">
+                            <!--button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button-->
+                            <!--center><strong>¡Error!</strong> El usuario o el correo ya fueron registrados</center-->
+                        </div>
+                        <div id="correcto" class="alert alert-success">
+                            <!--button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button-->
+                        </div>
                     </form>
                 </div>
                 <div class="row">
@@ -182,25 +196,24 @@
                     <div class="col-lg-12">
                         <h3>Clientes registrados</h3>
                     </div>
-                    <!--div class="infodiv table-responsive col-lg-8">
+                    <div class="infodiv table-responsive col-lg-8">
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th>Id</th>
-                                    <th>Usuario</th>
-                                    <th>Nombre(s)</th>
-                                    <th>Apellido(s)</th>
-                                    <th>Correo</th>
+                                    <th>Id </th>
+                                    <th>Cliente</th>
+                                    <th>Teléfono</th>
+                                    <th>Dirección</th>
+                                    <th>Email</th>
                                     <th>Tipo</th>
-                                    <th>Fecha</th>
                                 </tr>
                             </thead>
-                            <tbody id="tableUser">
+                            <tbody id="tableCustomer">
                                 
                             </tbody>
                         </table>
                         
-                    </div-->
+                    </div>
                     <!-- /.col-lg-12 -->
                 </div>
                 <!-- /.row -->
@@ -218,9 +231,12 @@
     <script src="app/views/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="app/views/bower_components/metisMenu/dist/metisMenu.min.js"></script>
     <script src="app/views/dist/js/sb-admin-2.js"></script>
+
     <script type="text/javascript"> 
         $("#tel").numeric();
-
+        $("#divPlatforms").hide();
+        $("#incorrecto").hide();
+        $("#correcto").hide();
         $.ajax({
             url: 'app/model/model.php',
             type: 'POST',
@@ -234,58 +250,95 @@
             sendCustomer(idUser);
         });
 
+        $("#customerType").change(function(event) {
+            var tipo = $("#customerType").val();
+            if (tipo == 1){
+                $("#divPlatforms").show();
+            }
+            else{
+                $("#divPlatforms").hide();
+
+            }
+        });
+
+        $.ajax({
+            url: 'app/model/model.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {"type": "allCustomers"}
+        })
+        .done(function(info) {
+            console.log(info);
+            $table = $("#tableCustomer");
+            for (var i = 0; i < info.infoCustomers.length; i++) {
+                var $tr = $("<tr/>");
+                var $id = $("<td/>").html(info.infoCustomers[i].id);
+                $tr.append($id);
+                var $name = $("<td/>").html(info.infoCustomers[i].name);
+                $tr.append($name);
+                var $tel = $("<td/>").html(info.infoCustomers[i].tel);
+                $tr.append($tel);
+                var $address = $("<td/>").html(info.infoCustomers[i].address);
+                $tr.append($address);
+                var $email = $("<td/>").html(info.infoCustomers[i].email);
+                $tr.append($email);
+                var $type = $("<td/>").html(info.infoCustomers[i].type);
+                $tr.append($type);
+                $table.append($tr);
+            };
+        });
+        
+
         function sendCustomer (idUser) {
             $("#formCustomer").submit(function(event) {
                 event.preventDefault();
                 var idUser = $("#id").val();
                 var name = $("#name").val();
-                var platforms = document.forms[0];
+                var platforms = document.getElementsByName("platforms");
                 var email = $("#email").val();
                 var tel = $("#tel").val();
+                var customerType = $("#customerType").val();
                 var address = $("#address").val();
-
+                var selPlatforms = [];
                 for (var i = 0; i < platforms.length; i++) {
                     if (platforms[i].checked) {
-                        console.log(platforms[i]);
-                    };
-                };
-
-                var info = JSON.stringify({"name": name, "platforms": platforms, "email": email, "tel":tel, "address":address, "idUser": idUser});
-                console.log(info);
-                
+                        //console.log(platforms[i].value);
+                        selPlatforms.push(platforms[i].value);
+                    }
+                }
+                var info = JSON.stringify({"name": name, "platforms": selPlatforms, "email": email, "tel":tel, "address":address, "type": customerType,"idUser": idUser});
+                //console.log(info);
                 $.ajax({
                     url: 'app/model/model.php',
                     type: 'POST',
-                    dataType: 'json',
+                    //dataType: 'json',
                     data: {"type": "saveCustomer", "info": info},
                 })
                 .done(function(info) {
                     console.log(info);
                     //createTable();            
-                    /*if (info == "existe") {
-                        $("#incorrecto").html("<center><strong>¡Error!</strong> El usuario o el correo ya fueron registrados</center>")
+                    if (info == "existe") {
+                        $("#incorrecto").html("<center><strong>¡Error!</strong> Ya hay un registro con esos datos</center>")
                         $("#incorrecto").show();
                         $("#correcto").hide();
-                        document.getElementById('formUser').reset();
+                        document.getElementById('formCustomer').reset();
                     }
-                    else if (info == "cambioCorrecto") {
+                    else if (info == "correcto") {
                         $("#correcto").html("<center><strong>¡Bien!</strong> El usuario se registro correctamente</center>")
                         $("#correcto").show();
                         $("#incorrecto").hide();
-                        document.getElementById('formUser').reset();   
+                        document.getElementById('formCustomer').reset();
+                        setTimeout(location.reload(), 3000);
                     }
-                    else if (info == "cambioIncorrecto") {
+                    else if (info == "incorrecto") {
                         $("#incorrecto").html("<center><strong>¡Error!</strong> No se registro el cambio</center>")
                         $("#incorrecto").show();
-                        document.getElementById('formUser').reset();
-                    }*/
+                        document.getElementById('formCustomer').reset();
+                    }
                 });
                 
             });
         }
-
-
-        $("#incorrecto").hide();
         $("#logout_btn").click(function(event) {
             event.preventDefault();
             $.ajax({
@@ -299,7 +352,6 @@
                 window.location = "/grupoit/";
             });
         });
-
         
     </script>
 

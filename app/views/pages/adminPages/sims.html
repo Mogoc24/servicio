@@ -72,7 +72,7 @@
                             <a href=""><i class="fa fa-dashboard fa-fw" ></i> Panel de control</a>
                         </li-->
                         <li>
-                            <a href=""><i class="fa fa-table fa-fw"></i> Servicios</a>
+                            <a href="main"><i class="fa fa-table fa-fw"></i> Servicios</a>
                         </li>
                         <li>
                             <a href="userForm"><i class="fa fa-user"></i> Usuarios</a>
@@ -95,15 +95,12 @@
                                     <a href="devices">Dispositivos</a>
                                 </li>
                                 <li>
-                                    <a href="sims">Sim Cards</a>
+                                    <a href="">Sim Cards</a>
                                 </li>
                                 <li>
                                     <a href="scripts">Scripts</a>
                                 </li>
                             </ul>
-                        </li>
-                        <li>
-                            <a href="allForm"><i class="fa fa-automobile fa-fw"></i> Registro General</a>
                         </li>
                         <li>
                             <a href="tickets"><i class="fa fa-edit fa-fw"></i> Generar Ticket</a>
@@ -152,7 +149,7 @@
             dataType: 'json',
             data: {"type": "session"},
         }).done(function(info) {
-            //console.log(info.usuario);
+            console.log(info.usuario);
             $("#usuario").html("<b> Usuario: </b> [" + info.usuario + "]");
         });
     
@@ -170,6 +167,16 @@
                 window.location = "/grupoit/";
             });
         });
+
+        /*$.ajax({
+            url: 'app/model/model.php',
+            type: 'POST',
+            //dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
+            data: {param1: 'value1'},
+        })
+        .done(function() {
+            console.log("success");
+        });*/
         
         
     </script>

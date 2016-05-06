@@ -89,10 +89,13 @@
                             <a href="#"><i class="fa fa-map-marker"></i> Equipos<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="#">Dispositivos</a>
+                                    <a href="devices">Dispositivos</a>
                                 </li>
                                 <li>
-                                    <a href="#">Sim Cards</a>
+                                    <a href="sims">Sim Cards</a>
+                                </li>
+                                <li>
+                                    <a href="scripts">Scripts</a>
                                 </li>
                             </ul>
                         </li>
@@ -102,6 +105,7 @@
                         <li>
                             <a href="changes"><i class="fa fa-list fa-fw"></i> Movimientos</a>
                         </li>
+
                         <!--li>
                             <a href="#" id="logout_btn"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                         </li-->
@@ -285,21 +289,26 @@
                     console.log(info);
                     //createTable();            
                     if (info == "existe") {
-                        $("#incorrecto").html("<center><strong>¡Error!</strong> El usuario o el correo ya fueron registrados</center>")
+                        $("#incorrecto").html("<center><strong>¡Error!</strong> El usuario o el correo ya fueron registrados</center>");
                         $("#incorrecto").show();
                         $("#correcto").hide();
                         document.getElementById('formUser').reset();
                     }
-                    else if (info == "cambioCorrecto") {
-                        $("#correcto").html("<center><strong>¡Bien!</strong> El usuario se registro correctamente</center>")
+                    else if (info == "cambioCorrectoMensaje enviado") {
+                        $("#correcto").html("<center><strong>¡Bien!</strong> El usuario se registro correctamente</center>");
                         $("#correcto").show();
                         $("#incorrecto").hide();
                         document.getElementById('formUser').reset();   
                     }
                     else if (info == "cambioIncorrecto") {
-                        $("#incorrecto").html("<center><strong>¡Error!</strong> No se registro el cambio</center>")
+                        $("#incorrecto").html("<center><strong>¡Error!</strong> No se registro el cambio</center>");
                         $("#incorrecto").show();
                         document.getElementById('formUser').reset();
+                    }
+                    else if (info == "incorrecto") {
+                        $("#incorrecto").html("<center><strong>¡Error!</strong> Incorrecto</center>");
+                        $("#incorrecto").show();
+                        document.getElementById('formUser').reset();   
                     }
                 });
                 

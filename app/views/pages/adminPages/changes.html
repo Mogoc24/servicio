@@ -92,10 +92,13 @@
                             <a href="#"><i class="fa fa-map-marker"></i> Equipos<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="#">Dispositivos</a>
+                                    <a href="devices">Dispositivos</a>
                                 </li>
                                 <li>
-                                    <a href="#">Sim Cards</a>
+                                    <a href="sims">Sim Cards</a>
+                                </li>
+                                <li>
+                                    <a href="scripts">Scripts</a>
                                 </li>
                             </ul>
                         </li>
@@ -191,7 +194,7 @@
                 url: 'app/model/model.php',
                 type: 'POST',
                 dataType: 'json',
-                data: {"type": "allChanges"},
+                data: {"type": "allChanges", "change":1},
             })
             .done(function(info) {
                 console.log(info);

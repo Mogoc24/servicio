@@ -5,12 +5,12 @@
     	printf("La conexión con el servidor de base de datos falló: %s\n", mysqli_connect_error());
     	exit();
 	}
-	$type = "Reporte";	
+	$type = "OS";	
 	//function createFolio($type){
-		$now = time();
-		$str = date("Ymd", $now);
+		//$now = time();
+		//$str = date("Ymd", $now);
 		//$str .= "-Rep-";
-		$str .= $type;
+		$str = $type;
 		$query = $conexion->query("SELECT iddata_frame FROM data_frame ORDER BY iddata_frame DESC LIMIT 1");
 		while ($row = $query->fetch_array()) {
 			$numero = $row['iddata_frame'];

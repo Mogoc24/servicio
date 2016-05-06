@@ -19,17 +19,25 @@
 			return $password;
 		}
 		
-		function createFolio($type){
-			$now = time();
-			//$fecha = date("Y-m-d H:i:s");
-			$str = date("Y-m-d", $now);
-			//$str .= "-Rep-";
-			$str .= $type;
-			$query = $this->mysqli->query("SELECT idfolios FROM folios ORDER BY idfolios DESC LIMIT 1");
-			$cadena = str_pad($numero,8,"0",STR_PAD_LEFT);
-			$folio = $str.$cadena;
+		function createFolio(){//$type){
+			$type = "OS";
+			$str = $type;
+			$query = $this->mysqli->query("SELECT * FROM folios ORDER BY idfolios DESC LIMIT 1");
+			if ($query->num_rows > 0) {
+				while ($row = $query->fetch_array()) {
+					$numero = $row['idfolios'] + 1;
+					$cadena = str_pad($numero,6,"0",STR_PAD_LEFT);
+					$folio = $str.$cadena;
+				}
+			}
+			else{
+					$numero = 1;
+					$cadena = str_pad($numero,6,"0",STR_PAD_LEFT);
+					$folio = $str.$cadena;
+			}
 
 			return $folio;
+			//echo $folio;
 		}
 
 		public function login(){
@@ -126,17 +134,76 @@
 		public function saveCustomer(){
 			$infoJ = $_POST['info'];
 			$info = json_decode($infoJ, false, 512, JSON_BIGINT_AS_STRING);
-			/*$id = $info->id;
+			//print_r($info);
+
+			$id = $info->idUser;
 			$name_customer = utf8_decode($info->name);
 			$platforms = $info->platforms;
 			$email = $info->email;
 			$tel = $info->tel;
 			$address = $info->address;
-			$idUser = $info->idUser;*/
+			$idUser = $info->idUser;
+			$type = $info->type;
 
-			//$id = $this->mysqli->real_escape_string($id);
-			//$name_customer = $this->mysqli->real_escape_string($name_customer);
-			echo "Funcion correcta";
+			$id = $this->mysqli->real_escape_string($id);
+			$name_customer = $this->mysqli->real_escape_string($name_customer);
+			$tel = $this->mysqli->real_escape_string($tel);
+			$address = $this->mysqli->real_escape_string($address);
+			$type = $this->mysqli->real_escape_string($type);
+
+			if ($type != 1) {
+				if ($this->mysqli->query("INSERT INTO customers values ('$id', '$name_customer', '$tel', '$address', '$email', '$type')")) {
+					echo "correcto";
+				}
+				else {
+					echo "incorrecto";
+				}
+			}
+			else{
+				if ($this->mysqli->query("INSERT INTO customers values ('$id', '$name_customer', '$tel', '$address', '$email', '$type')")) {
+					//echo "Se registro al cliente";
+					$idCustomer = $this->mysqli->insert_id;
+					for ($i=0; $i < count($platforms); $i++) { 
+						//echo $platforms[$i];
+						if ($this->mysqli->query("INSERT INTO customer_platform values('$idCustomer', '$platforms[$i]')")) {
+							echo "correcto";
+						}
+						else{
+							echo "incorrecto";
+						}
+					}
+				}
+				else{
+					echo "existe";
+				}
+			}
+		}
+
+		public function saveContact(){
+			$infoJ = $_POST['info'];
+			$info = json_decode($infoJ, false, 512, JSON_BIGINT_AS_STRING);
+			print_r($info);
+			$idUser = $info->idUser;
+			$idCustomers = $info->id;
+			$email = $info->email;
+			$tel = $info->tel;
+			$type = utf8_decode($info->type);
+			$name = utf8_decode($info->name);
+
+			$idUser = $this->mysqli->real_escape_string($idUser);
+			$idCustomer = $this->mysqli->real_escape_string($idCustomers);
+			$email = $this->mysqli->real_escape_string($email);
+			$tel = $this->mysqli->real_escape_string($tel);
+			$name = $this->mysqli->real_escape_string($name);
+			$type = $this->mysqli->real_escape_string($type);
+
+			if ($this->mysqli->query("INSERT INTO contacts values(default, '$name', '$tel', '$email', '$type', '$idCustomer')")) {
+				echo "correcto";
+			}
+			else{
+				echo "incorrecto";
+			}
+
 		}
 
 		public function saveTicket(){
@@ -145,16 +212,37 @@
 			//print_r($info);
 
 			$idUser = $info->idUser;
-			$customer = $info->customer;
+			$idCustomer = $info->customer;
 			$problemDate = $info->problemDate;
-			$problemType = $info->problemType;
+			$serviceType = $info->serviceType;
 			$desc = utf8_decode($info->desc);
 
 			$idUser = $this->mysqli->real_escape_string($idUser);
-			$customer = $this->mysqli->real_escape_string($customer);
+			$customer = $this->mysqli->real_escape_string($idCustomer);
 			$problemDate = $this->mysqli->real_escape_string($problemDate);
-			$problemType = $this->mysqli->real_escape_string($problemType);
+			$serviceType = $this->mysqli->real_escape_string($serviceType);
 			$desc = $this->mysqli->real_escape_string($desc);
+			$typeChange = "Abierto";
+
+			$folio = $this->createFolio();
+
+			if ($this->mysqli->query("INSERT INTO folios values(default, '$folio')")) {
+				echo "Se ingreso el folio";
+				$idFolio = $this->mysqli->insert_id;
+				if ($this->mysqli->query("INSERT INTO tickets values(default, '$desc', '$problemDate', current_timestamp, '$idCustomer', '$idFolio', '$serviceType')")) {
+					echo "Se guardo el ticket";
+					$idTicket = $this->mysqli->insert_id;
+					if ($this->mysqli->query("INSERT INTO change_tickets values(default, '$folio', '$typeChange', current_timestamp,'$idTicket')")) {
+						echo "correcto";
+					}
+					else{
+						echo "incorrecto";
+					}
+				}
+			}
+			else{
+				echo "No se ingreso el folio";
+			}
 
 		}
 
@@ -164,7 +252,37 @@
 			while ($row = $query->fetch_array()) {
 				if ($output != '{"infoCustomers":[') {$output .= ",";}
 				$output .= '{"id":'.$row['idcustomers'].',';
-				$output .= '"name":"'.$row['name_customer'].'"}';
+				$output .= '"name":"'.utf8_encode($row['name_customer']).'",';
+				$output .= '"tel":'.$row['number'].',';
+				$output .= '"address":"'.utf8_encode($row['address']).'",';
+				$output .= '"email":"'.$row['email'].'",';
+				if ($row['type']==1) {
+					$output .= '"type":"GPS"}';	
+				}
+				elseif ($row['type'] == 2) {
+					$output .= '"type":"Internet Satelital"}';
+				}
+				elseif ($row['type'] == 3) {
+					$output .= '"type":"Cámaras"}';
+				}
+				
+			}
+			$output .= "]}";
+			echo $output;
+		}
+
+		public function allContacts(){
+			$query = $this->mysqli->query("SELECT c.name_customer, cc.name_contact, cc.tel, cc.email, cc.type FROM contacts as cc INNER JOIN customers as c on c.idcustomers = cc.customers_idcustomers");
+			$output = '{"infoContacts":[';
+			while ($row = $query->fetch_array()) {
+				if ($output != '{"infoContacts":[') {$output .= ",";}
+				//$output .= '{"id":'.$row['idcustomers'].',';
+				$output .= '{"name":"'.utf8_encode($row['name_customer']).'",';
+				$output .= '"nameContact":"'.utf8_encode($row['name_contact']).'",';
+				$output .= '"tel":"'.$row['tel'].'",';
+				$output .= '"email":"'.$row['email'].'",';
+				$output .= '"type":"'.utf8_encode($row['type']).'"}';
+				
 			}
 			$output .= "]}";
 			echo $output;
@@ -292,6 +410,9 @@
 	elseif ($_POST['type']=="saveCustomer") {
 		$instance->saveCustomer();
 	}
+	elseif ($_POST['type']=="saveContact") {
+		$instance->saveContact();
+	}
 	elseif ($_POST['type']=="saveTicket") {
 		$instance->saveTicket();
 	}
@@ -316,8 +437,17 @@
 	elseif ($_POST['type']=="allChanges") {
 		$instance->allChanges();
 	}
+	elseif ($_POST['type']=="allCustomers") {
+		$instance->allCustomers();
+	}
+	elseif ($_POST['type']=="allContacts") {
+		$instance->allContacts();
+	}
 	elseif ($_POST['type']=="changePass") {
 		$instance->changePass();
+	}
+	elseif ($_POST['type']=="folio") {
+		$instance->createFolio();
 	}
 	else{
 		echo "Error al acceder a la funcion";

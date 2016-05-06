@@ -28,6 +28,15 @@
 	elseif($_GET['action']=="tickets"){
 		$mvc->tickets();
 	}
+	elseif($_GET['action']=="devices"){
+		$mvc->devices();
+	}
+	elseif($_GET['action']=="sims"){
+		$mvc->sims();
+	}
+	elseif($_GET['action']=="allForm"){
+		$mvc->allForm();
+	}
 	elseif($_GET['action']=="test"){
 		$mvc->test();
 	}

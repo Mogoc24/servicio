@@ -31,7 +31,7 @@
 				}
 				else{
 					//include("app/views/pages/login.html");
-					header('Location: /grupoit/');
+					header('Location: ./');
 				}
 			}
 			else{
@@ -46,7 +46,7 @@
 				}
 				else{
 					//include("app/views/pages/login.html");
-					header('Location: /grupoit/');
+					header('Location: ./');
 				}
 			}
 			else{
@@ -78,7 +78,7 @@
 				}
 				else{
 					//include("app/views/pages/login.html");
-					header('Location: /grupoit/');
+					header('Location: ./');
 				}
 			}
 			else{
@@ -94,13 +94,45 @@
 				}
 				else{
 					//include("app/views/pages/login.html");
-					header('Location: /grupoit/');
+					header('Location: ./');
 				}
 			}
 			else{
 				include("app/views/pages/login.html");
 			}
 		}
+
+		public function devices(){
+			session_start();
+			if (isset($_SESSION["connected"]) && isset($_SESSION['type'])) {
+				if ($_SESSION['type']==1) {
+					include("app/views/pages/adminPages/devices.html");
+				}
+				else{
+					//include("app/views/pages/login.html");
+					header('Location: ./');
+				}
+			}
+			else{
+				include("app/views/pages/login.html");
+			}
+		}
+
+		public function sims(){
+			session_start();
+			if (isset($_SESSION["connected"]) && isset($_SESSION['type'])) {
+				if ($_SESSION['type']==1) {
+					include("app/views/pages/adminPages/sims.html");
+				}
+				else{
+					//include("app/views/pages/login.html");
+					header('Location: ./');
+				}
+			}
+			else{
+				include("app/views/pages/login.html");
+			}
+		}		
 
 		public function tickets(){
 			session_start();
@@ -110,7 +142,23 @@
 				}
 				else{
 					//include("app/views/pages/login.html");
-					header('Location: /grupoit/');
+					header('Location: ./');
+				}
+			}
+			else{
+				include("app/views/pages/login.html");
+			}
+		}
+
+		public function allForm(){
+			session_start();
+			if (isset($_SESSION["connected"]) && isset($_SESSION['type'])) {
+				if ($_SESSION['type']==1) {
+					include("app/views/pages/adminPages/allForm.html");
+				}
+				else{
+					//include("app/views/pages/login.html");
+					header('Location: ./');
 				}
 			}
 			else{
@@ -129,7 +177,7 @@
 				}
 				else{
 					//include("app/views/pages/login.html");
-					header('Location: /grupoit/');
+					header('Location: ./');
 				}
 			}
 			else{
@@ -138,7 +186,7 @@
 		}
 
 		public function error(){
-			header('Location: /grupoit/');
+			header('Location: ./');
 		}
 
 	}
